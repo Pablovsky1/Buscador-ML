@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -60,7 +61,8 @@ public class MainActivity extends AppCompatActivity implements SearchDialog.Noti
         viewModel.getProducts().observe(this, searchProducts -> {
             findViewById(R.id.progressBarLoading).setVisibility(View.GONE);
             myAdapter = new ProductAdapter(searchProducts, (model, position) -> {
-
+                Intent intent = new Intent(MainActivity.this, ProductActivity.class);
+                startActivity(intent);
             });
             myRecyclerView.setItemAnimator(new DefaultItemAnimator());
             myRecyclerView.setLayoutManager(myLayoutManager);

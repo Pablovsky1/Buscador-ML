@@ -10,5 +10,4 @@ public interface ApiRequest {
 
     @GET("sites/MLA/search")
     Call<Search> getItems(@Query("q") String query, @Query("offset") Integer offset, @Query("limit") Integer limit);
-
 }

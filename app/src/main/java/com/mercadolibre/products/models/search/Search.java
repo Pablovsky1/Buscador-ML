@@ -2,7 +2,7 @@ package com.mercadolibre.products.models.search;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Search {
 
@@ -10,12 +10,12 @@ public class Search {
     private SearchPagination paging;
 
     @SerializedName("results")
-    private List<SearchProduct> productos;
+    private ArrayList<SearchProduct> productos;
 
     public Search() {
     }
 
-    public Search(SearchPagination paging, List<SearchProduct> productos) {
+    public Search(SearchPagination paging, ArrayList<SearchProduct> productos) {
         this.paging = paging;
         this.productos = productos;
     }
@@ -28,11 +28,11 @@ public class Search {
         this.paging = paging;
     }
 
-    public List<SearchProduct> getProductos() {
+    public ArrayList<SearchProduct> getProductos() {
         return productos;
     }
 
-    public void setProductos(List<SearchProduct> productos) {
+    public void setProductos(ArrayList<SearchProduct> productos) {
         this.productos = productos;
     }
 }

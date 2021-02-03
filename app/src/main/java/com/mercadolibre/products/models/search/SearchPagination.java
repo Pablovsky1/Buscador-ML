@@ -54,4 +54,14 @@ public class SearchPagination {
     public void setLimit(Integer limit) {
         this.limit = limit;
     }
+
+    @Override
+    public String toString() {
+        return "SearchPagination{" +
+                "total=" + total +
+                ", primary_results=" + primary_results +
+                ", offset=" + offset +
+                ", limit=" + limit +
+                '}';
+    }
 }

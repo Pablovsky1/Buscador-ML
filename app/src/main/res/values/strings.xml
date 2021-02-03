@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">MercadoLibre Products</string>
+    <string name="search_not_found">No encontramos publicaciones</string>
+    <string name="search_not_found_advice">Revisa que la palabra esté bien escrita</string>
+    <string name="search_error">Por favor, intente nuevamente.</string>
+    <string name="search_view_hint">Buscar en Mercado Libre</string>
+    <string name="description_icon_search_error">Icono de error</string>
 </resources>

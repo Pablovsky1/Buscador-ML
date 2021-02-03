@@ -4,65 +4,19 @@ import com.google.gson.annotations.SerializedName;
 
 public class SearchProduct {
 
-    private String id;
+    public String id;
 
     @SerializedName("title")
-    private String title;
+    public String title;
 
-    private String price;
+    public String price;
 
-    private String condition;
+    public String condition;
 
-    private String thumbnail;
+    public String thumbnail;
 
     @SerializedName("searchShipping")
-    private SearchShipping searchShipping;
+    public SearchShipping searchShipping;
 
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public String getCondition() {
-        return condition;
-    }
-
-    public void setCondition(String condition) {
-        this.condition = condition;
-    }
-
-    public String getThumbnail() {
-        return thumbnail;
-    }
-
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
-    }
-
-    public SearchShipping getSearchShipping() {
-        return searchShipping;
-    }
-
-    public void setSearchShipping(SearchShipping searchShipping) {
-        this.searchShipping = searchShipping;
-    }
 }

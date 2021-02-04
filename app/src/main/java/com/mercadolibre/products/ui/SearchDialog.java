@@ -109,8 +109,6 @@ public class SearchDialog extends DialogFragment {
         this.productDescription = productDescription;
     }
 
-
-
     @Override
     public void onDestroy() {
         myView = null;

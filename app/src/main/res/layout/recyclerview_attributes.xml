@@ -15,7 +15,7 @@
         android:textStyle="bold"
         android:background="#CCCCCC"
         android:lines="1"
-        android:textColor="#2B2B2B"/>
+        android:textColor="@color/text_color"/>
 
     <TextView
         android:id="@+id/valueName"
@@ -27,5 +27,5 @@
         android:lines="1"
         android:textStyle="bold"
         android:background="#E3E3E3"
-        android:textColor="#2B2B2B"/>
+        android:textColor="@color/text_color"/>
 </LinearLayout>

@@ -1,5 +1,7 @@
 package com.mercadolibre.products.models.search;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -12,8 +14,7 @@ public class Search {
     @SerializedName("results")
     private ArrayList<SearchProduct> productos;
 
-    public Search() {
-    }
+
 
     public Search(SearchPagination paging, ArrayList<SearchProduct> productos) {
         this.paging = paging;
@@ -24,15 +25,17 @@ public class Search {
         return paging;
     }
 
-    public void setPaging(SearchPagination paging) {
-        this.paging = paging;
-    }
 
     public ArrayList<SearchProduct> getProductos() {
         return productos;
     }
 
-    public void setProductos(ArrayList<SearchProduct> productos) {
-        this.productos = productos;
+    @NonNull
+    @Override
+    public String toString() {
+        return "Search{" +
+                "paging=" + paging +
+                ", productos=" + productos +
+                '}';
     }
 }

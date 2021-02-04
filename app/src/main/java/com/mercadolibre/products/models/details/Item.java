@@ -1,27 +1,27 @@
 package com.mercadolibre.products.models.details;
 
-import android.content.Context;
-import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
-import com.mercadolibre.products.R;
 
 import java.util.ArrayList;
 
 public class Item {
 
-    String id;
-    String title;
-    String price;
+    private String id;
+    private String title;
+    private String price;
     @SerializedName("available_quantity")
-    int availableQuantity;
+    private int availableQuantity;
     @SerializedName("sold_quantity")
-    String soldQuantity;
-    String condition;
+    private String soldQuantity;
+    private String condition;
     @SerializedName("pictures")
-    ArrayList<ItemPictures> pictures;
+    private ArrayList<ItemPictures> pictures;
     @SerializedName("attributes")
-    ArrayList<ItemAttributes> attributes;
+    private ArrayList<ItemAttributes> attributes;
+
 
     public String getId() {
         return id;
@@ -35,9 +35,6 @@ public class Item {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     public String getPrice() {
         return price;
@@ -67,33 +64,27 @@ public class Item {
         return pictures;
     }
 
-    public void setPictures(ArrayList<ItemPictures> pictures) {
-        this.pictures = pictures;
-    }
-
     public int getAvailableQuantity() {
         return availableQuantity;
     }
 
-    public void setAvailableQuantity(int availableQuantity) {
-        this.availableQuantity = availableQuantity;
-    }
 
     public ArrayList<ItemAttributes> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(ArrayList<ItemAttributes> attributes) {
-        this.attributes = attributes;
-    }
-
-    public ArrayList<String> getPictureURL(){
-        if(pictures==null) return new ArrayList<>();
-        ArrayList<String> url = new ArrayList<>();
-        for (int i = 0 ; i < pictures.size(); i++){
-            Log.e("LogApp","Url: "+pictures.get(i).getUrl());
-            url.add(pictures.get(i).url);
-        }
-        return url;
+    @NonNull
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", price='" + price + '\'' +
+                ", availableQuantity=" + availableQuantity +
+                ", soldQuantity='" + soldQuantity + '\'' +
+                ", condition='" + condition + '\'' +
+                ", pictures=" + pictures +
+                ", attributes=" + attributes +
+                '}';
     }
 }

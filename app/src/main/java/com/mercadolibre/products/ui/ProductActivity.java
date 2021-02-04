@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -13,18 +12,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.mercadolibre.products.R;
 import com.mercadolibre.products.adapters.AttributesAdapter;
 import com.mercadolibre.products.adapters.PicturesAdapter;
-import com.mercadolibre.products.models.details.Item;
-import com.mercadolibre.products.models.details.ItemAttributes;
-import com.mercadolibre.products.models.details.ItemPictures;
-import com.mercadolibre.products.util.Resource;
+import com.mercadolibre.products.util.MyLog;
 import com.mercadolibre.products.viewmodels.ViewModelProduct;
 
-import java.util.ArrayList;
 
 public class ProductActivity extends AppCompatActivity {
     private final String TAG = "ProductActivity";
@@ -40,69 +36,86 @@ public class ProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
         toolbar();
-
-        this.viewModel = new ViewModelProvider(this).get(ViewModelProduct.class);
+        init();
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
            String id = extras.getString("id");
             this.viewModel.loadProduct(id);
+        }else{
+            finish();
         }
 
-        viewModel.getProduct().observe(this, new Observer<Resource<Item>>() {
-            @Override
-            public void onChanged(Resource<Item> resource) {
-                switch (resource.status){
-                    case LOADING:
-                        break;
-                    case SUCCESS:
+        viewModel.getProduct().observe(this, resource -> {
+            switch (resource.status){
+                case LOADING:
+                    MyLog.i(TAG,"loading product");
+                    findViewById(R.id.productProgressBar).setVisibility(View.VISIBLE);
+                    findViewById(R.id.containerErrors).setVisibility(View.GONE);
+                    findViewById(R.id.retry).setVisibility(View.GONE);
+                    break;
+                case SUCCESS:
+                    MyLog.i(TAG,"producto: "+resource.data.toString());
+                    findViewById(R.id.productProgressBar).setVisibility(View.GONE);
+                    findViewById(R.id.containerErrors).setVisibility(View.GONE);
+                    findViewById(R.id.retry).setVisibility(View.GONE);
+                    ((TextView)findViewById(R.id.condition)).setText(resource.data.getCondition());
+                    ((TextView)findViewById(R.id.soldQuantity)).setText(resource.data.getSoldQuantity());
+                    ((TextView)findViewById(R.id.title)).setText(resource.data.getTitle());
+                    ((TextView)findViewById(R.id.price)).setText(resource.data.getPrice());
+                    ((TextView)findViewById(R.id.quantity)).setText(String.valueOf(resource.data.getAvailableQuantity()));
 
-                        ((TextView)findViewById(R.id.condition)).setText(resource.data.getCondition());
-                        ((TextView)findViewById(R.id.soldQuantity)).setText(resource.data.getSoldQuantity());
-                        ((TextView)findViewById(R.id.title)).setText(resource.data.getTitle());
-                        ((TextView)findViewById(R.id.price)).setText(resource.data.getPrice());
-                        ((TextView)findViewById(R.id.quantity)).setText(getString(R.string.product_available_quantity).concat(": ").concat(String.valueOf(resource.data.getAvailableQuantity())));
-
-                        break;
-                    case ERROR:
-                        break;
-                }
-            }
-        });
-        this.myRecyclerViewAttributes = findViewById(R.id.recyclerAttributes);
-        this.myLayoutManagerAttributes = new LinearLayoutManager(this);
-        myRecyclerViewAttributes.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-
-        viewModel.getAttributes().observe(this, new Observer<ArrayList<ItemAttributes>>() {
-            @Override
-            public void onChanged(ArrayList<ItemAttributes> itemAttributes) {
-                myAdapterAttributes = new AttributesAdapter(itemAttributes, (model, position) -> {
-
-                });
-                myRecyclerViewAttributes.setItemAnimator(new DefaultItemAnimator());
-                myRecyclerViewAttributes.setLayoutManager(myLayoutManagerAttributes);
-                myRecyclerViewAttributes.setAdapter(myAdapterAttributes);
+                    break;
+                case ERROR:
+                    MyLog.e(TAG,"product error "+resource.message);
+                    findViewById(R.id.containerErrors).setVisibility(View.VISIBLE);
+                    findViewById(R.id.productProgressBar).setVisibility(View.GONE);
+                    ((TextView)findViewById(R.id.textError)).setText(resource.message);
+                    findViewById(R.id.retry).setVisibility(View.VISIBLE);
+                    break;
             }
         });
 
-        this.myRecyclerViewPictures = findViewById(R.id.recyclerPicture);
-        this.myLayoutManagerPictures = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
-        viewModel.getPictures().observe(this, new Observer<ArrayList<ItemPictures>>() {
-            @Override
-            public void onChanged(ArrayList<ItemPictures> itemPictures) {
-                myAdapterPictures = new PicturesAdapter(itemPictures, (model, position) -> {
 
-                });
-                myRecyclerViewPictures.setItemAnimator(new DefaultItemAnimator());
-                myRecyclerViewPictures.setLayoutManager(myLayoutManagerPictures);
-                myRecyclerViewPictures.setAdapter(myAdapterPictures);
+        viewModel.getAttributes().observe(this, itemAttributes -> {
+            MyLog.i(TAG,"attributes: "+itemAttributes.size());
+            myAdapterAttributes = new AttributesAdapter(itemAttributes, (model, position) -> {
+
+            });
+            myRecyclerViewAttributes.setItemAnimator(new DefaultItemAnimator());
+            myRecyclerViewAttributes.setLayoutManager(myLayoutManagerAttributes);
+            myRecyclerViewAttributes.setAdapter(myAdapterAttributes);
+        });
+
+
+        viewModel.getPictures().observe(this, itemPictures -> {
+            MyLog.i(TAG,"pictures: "+itemPictures.size());
+            myAdapterPictures = new PicturesAdapter(itemPictures, (model, position) -> {
+
+            });
+            myRecyclerViewPictures.setItemAnimator(new DefaultItemAnimator());
+            myRecyclerViewPictures.setLayoutManager(myLayoutManagerPictures);
+            myRecyclerViewPictures.setAdapter(myAdapterPictures);
+        });
+
+        findViewById(R.id.retry).setOnClickListener(v -> {
+            if(extras != null) {
+                String id = extras.getString("id");
+                viewModel.loadProduct(id);
             }
         });
 
     }
 
+    private void init(){
+        this.viewModel = new ViewModelProvider(this).get(ViewModelProduct.class);
+        this.myRecyclerViewPictures = findViewById(R.id.recyclerPicture);
+        this.myLayoutManagerPictures = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+        this.myRecyclerViewAttributes = findViewById(R.id.recyclerAttributes);
+        this.myRecyclerViewAttributes.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        this.myLayoutManagerAttributes = new LinearLayoutManager(this);
+    }
 
-
-    public void toolbar() {
+    private void toolbar() {
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         if (getSupportActionBar() != null) {

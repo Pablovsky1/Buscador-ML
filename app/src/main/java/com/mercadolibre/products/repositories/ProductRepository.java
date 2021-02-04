@@ -10,7 +10,6 @@ import com.mercadolibre.products.R;
 import com.mercadolibre.products.models.details.Item;
 import com.mercadolibre.products.models.details.ItemAttributes;
 import com.mercadolibre.products.models.details.ItemPictures;
-import com.mercadolibre.products.models.search.Search;
 import com.mercadolibre.products.retrofit.ApiRequest;
 import com.mercadolibre.products.retrofit.RetrofitRequest;
 import com.mercadolibre.products.util.AppConstant;
@@ -28,7 +27,7 @@ import retrofit2.Retrofit;
 
 public class ProductRepository {
 
-    private final String LOG = "ProductRepository";
+    private final String TAG = "ProductRepository";
     private final Application application;
     private final Retrofit retrofit;
     private final MutableLiveData<Resource<Item>> product;
@@ -44,6 +43,11 @@ public class ProductRepository {
     }
 
     public void getProduct(String id){
+        if(!AppConstant.isConnectionAvailable(application)){
+            this.product.setValue(Resource.error(application.getString(R.string.conection),null));
+            return;
+        }
+        product.postValue(Resource.loading(null));
         ApiRequest apiRequest = retrofit.create(ApiRequest.class);
         Call<Item> call = apiRequest.getProduct(id);
         call.enqueue(new Callback<Item>() {
@@ -51,7 +55,6 @@ public class ProductRepository {
             public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
                 if(response.body()==null){
                     product.postValue(Resource.error("No se encontre el producto",null));
-                    MyLog.e(LOG,"Product null");
                 }else {
                     response.body().setCondition(setTypeCondition(response.body().getCondition()));
                     response.body().setPrice(setPrice(response.body().getPrice()));
@@ -59,14 +62,12 @@ public class ProductRepository {
                     attributes.postValue(setAttributes(response.body().getAttributes()));
                     product.postValue(Resource.success(response.body()));
                     pictures.postValue(response.body().getPictures());
-                    MyLog.i(LOG, "Product success: " + response.body().getId());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<Item> call,@NonNull Throwable t) {
                 product.postValue(Resource.error("No se encontro el producto",null));
-                MyLog.e(LOG,"Product error: "+t.getMessage());
             }
         });
     }

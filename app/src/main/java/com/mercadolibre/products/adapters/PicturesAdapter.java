@@ -52,8 +52,11 @@ public class PicturesAdapter extends  RecyclerView.Adapter<PicturesAdapter.ViewH
 
         public void bind(final ItemPictures model, final OnItemClickListener listener) {
 
-            Picasso.get().load(model.getUrl()).into(picture);
-
+            Picasso.get()
+                    .load(model.getUrl())
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.without_image)
+                    .into(picture);
 
             itemView.setOnClickListener(v -> listener.onItemClick(model, getAdapterPosition()));
 

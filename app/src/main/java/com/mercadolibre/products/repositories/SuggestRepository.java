@@ -1,20 +1,18 @@
 package com.mercadolibre.products.repositories;
 
+
 import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.mercadolibre.products.R;
-import com.mercadolibre.products.models.search.Search;
 import com.mercadolibre.products.models.suggest.Suggest;
 import com.mercadolibre.products.models.suggest.SuggestQueries;
 import com.mercadolibre.products.retrofit.ApiRequest;
 import com.mercadolibre.products.retrofit.RetrofitRequest;
 import com.mercadolibre.products.util.AppConstant;
 import com.mercadolibre.products.util.MyLog;
-import com.mercadolibre.products.util.Resource;
 
 import java.util.ArrayList;
 
@@ -30,12 +28,16 @@ public class SuggestRepository {
     private final MutableLiveData<ArrayList<SuggestQueries>> suggest;
 
     public SuggestRepository(Application application) {
-        this.application = application;
         this.retrofit = RetrofitRequest.getRetrofitInstance();
         this.suggest = new MutableLiveData<>();
+        this.application = application;
     }
 
     public void getSuggest(String item){
+        if(!AppConstant.isConnectionAvailable(application)){
+            return;
+        }
+
         if(item.isEmpty()){
             suggest.setValue(new ArrayList<>());
             return;

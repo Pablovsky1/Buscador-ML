@@ -24,10 +24,6 @@ public class ViewModelSearch extends AndroidViewModel {
         this.suggestRepository.getSuggest(item);
     }
 
-    public void removeSuggest(){
-
-    }
-
     public LiveData<ArrayList<SuggestQueries>> getSuggest(){
         return suggestRepository.getSuggest();
     }

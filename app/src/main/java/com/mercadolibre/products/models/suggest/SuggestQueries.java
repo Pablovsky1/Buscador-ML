@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 public class SuggestQueries {
 
     @SerializedName("q")
-    String q;
+    private String q;
 
     public SuggestQueries(String q) {
         this.q = q;

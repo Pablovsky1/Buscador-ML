@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".ui.ProductActivity">
 
 
@@ -64,7 +65,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:textColor="#171717"
+                    android:textColor="@color/text_color"
                     android:textSize="16sp"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
@@ -84,36 +85,50 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:textColor="#323232"
+                    android:textColor="@color/text_color"
                     android:textSize="26sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/recyclerPicture" />
 
                 <TextView
-                    android:id="@+id/quantity"
-                    android:layout_width="match_parent"
+                    android:id="@+id/titleQuantity"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textColor="#323232"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/product_available_quantity"
+                    android:textColor="@color/text_color"
                     android:textSize="16sp"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/price" />
+
+                <TextView
+                    android:id="@+id/quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/text_color"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toEndOf="@+id/titleQuantity"
                     app:layout_constraintTop_toBottomOf="@+id/price" />
 
                 <TextView
                     android:id="@+id/productInformation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="16dp"
                     android:text="@string/product_information"
+                    android:textColor="@color/text_color"
                     android:textSize="16sp"
-                    android:textColor="#232323"
+                    android:textStyle="bold"
                     app:layout_constraintTop_toBottomOf="@+id/quantity" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerAttributes"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
                     android:scrollbars="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -121,10 +136,66 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/productInformation" />
 
+
+
+                <LinearLayout
+                    android:id="@+id/productProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/containerErrors"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@color/white"
+                    android:visibility="visible"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/iconError"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_marginBottom="20dp"
+                        android:src="@drawable/ic_search_empty"
+                        android:contentDescription="@string/description_icon_search_error" />
+                    <TextView
+                        android:id="@+id/textError"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:textSize="18sp"
+                        />
+                    <Button
+                        android:id="@+id/retry"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:text="@string/retry"/>
+                </LinearLayout>
+
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
     </ScrollView>
-
 
 </LinearLayout>

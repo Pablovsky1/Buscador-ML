@@ -65,4 +65,16 @@ public class SearchProduct {
     public void setSearchShipping(SearchShipping searchShipping) {
         this.searchShipping = searchShipping;
     }
+
+    @Override
+    public String toString() {
+        return "SearchProduct{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", price='" + price + '\'' +
+                ", condition='" + condition + '\'' +
+                ", thumbnail='" + thumbnail + '\'' +
+                ", searchShipping=" + searchShipping +
+                '}';
+    }
 }

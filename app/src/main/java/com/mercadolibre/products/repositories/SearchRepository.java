@@ -24,7 +24,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class SearchRepository {
-    private final String LOG = "SearchRepository";
     private final Application application;
     private final Retrofit retrofit;
     private final MutableLiveData<Resource<Search>> search;
@@ -42,8 +41,13 @@ public class SearchRepository {
     }
 
     public void getSearch(String item){
-        this.search.setValue(Resource.loading(null));
         removeProducts();
+        if(!AppConstant.isConnectionAvailable(application)){
+            this.search.setValue(Resource.error(application.getString(R.string.conection),null));
+            return;
+        }
+        this.search.setValue(Resource.loading(null));
+
         ApiRequest apiRequest = retrofit.create(ApiRequest.class);
         Call<Search> call = apiRequest.getItems(item, AppConstant.DEFAULT_OFFSET, AppConstant.PAGE_LIMIT);
         call.enqueue(new Callback<Search>() {
@@ -51,19 +55,16 @@ public class SearchRepository {
             public void onResponse(@NonNull Call<Search> call,@NonNull Response<Search> response) {
                 if(response.body()==null || response.body().getProductos().size()<=0){
                     search.postValue(Resource.error(application.getString(R.string.search_not_found)+"\n"+application.getString(R.string.search_not_found_advice),null));
-                    MyLog.e(LOG,"Search null");
                 }else {
                     search.postValue(Resource.success(response.body()));
                     addProducts(response.body().getProductos());
                     pagination.setValue(response.body().getPaging());
-                    MyLog.i(LOG, "Search success products: " + response.body().getProductos().size());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<Search> call,@NonNull Throwable t) {
                 search.postValue(Resource.error(application.getString(R.string.search_error),null));
-                MyLog.e(LOG,"Search error: "+t.getMessage());
             }
         });
     }
@@ -79,27 +80,23 @@ public class SearchRepository {
             @Override
             public void onResponse(@NonNull Call<Search> call,@NonNull Response<Search> response) {
                 if(response.body()==null || response.body().getProductos().size()<=0){
-                    MyLog.e(LOG,"Search null");
                     loading=true;
                 }else {
                     pagination.setValue(response.body().getPaging());
                     ArrayList<SearchProduct> searchProducts = products.getValue();
                     if(searchProducts==null){
-                        MyLog.e(LOG,"SearchProducts null");
                         loading=true;
                         return;
                     }
                     searchProducts.addAll(response.body().getProductos());
                     addProducts(searchProducts);
                     loading=true;
-                    MyLog.i(LOG, "Search success products: " + response.body().getProductos().size());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<Search> call,@NonNull Throwable t) {
                 loading=true;
-                MyLog.e(LOG,"Search error: "+t.getMessage());
             }
         });
     }
@@ -108,10 +105,10 @@ public class SearchRepository {
         return this.products;
     }
 
-    public void removeProducts(){
+    private void removeProducts(){
         products.postValue(new ArrayList<>());
     }
-    public void addProducts(ArrayList<SearchProduct> list){
+    private void addProducts(ArrayList<SearchProduct> list){
         products.postValue(list);
     }
 

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.mercadolibre.products.R;
 import com.mercadolibre.products.adapters.ProductAdapter;
 
+import com.mercadolibre.products.util.MyLog;
 import com.mercadolibre.products.viewmodels.ViewModelMain;
 
 public class MainActivity extends AppCompatActivity implements SearchDialog.NoticeSearchDialog {
@@ -40,25 +41,29 @@ public class MainActivity extends AppCompatActivity implements SearchDialog.Noti
         viewModel.getSearch().observe(this, resource -> {
             switch (resource.status) {
                 case LOADING:
+                    MyLog.i(TAG,"loading search");
                     findViewById(R.id.containerErros).setVisibility(View.GONE);
                     findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
+                    findViewById(R.id.retry).setVisibility(View.GONE);
                     break;
                 case SUCCESS:
+                    MyLog.i(TAG,"search: "+resource.data.toString());
                     findViewById(R.id.progress_bar).setVisibility(View.GONE);
+                    findViewById(R.id.retry).setVisibility(View.GONE);
                     findViewById(R.id.containerErros).setVisibility(View.GONE);
                     break;
                 case ERROR:
+                    MyLog.i(TAG,"error search "+resource.message);
                     findViewById(R.id.containerErros).setVisibility(View.VISIBLE);
+                    findViewById(R.id.retry).setVisibility(View.VISIBLE);
                     ((TextView) findViewById(R.id.textError)).setText(resource.message);
                     findViewById(R.id.progress_bar).setVisibility(View.GONE);
                     break;
             }
         });
 
-        myRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-
-
         viewModel.getProducts().observe(this, searchProducts -> {
+            MyLog.i(TAG,"products: "+searchProducts.size());
             findViewById(R.id.progressBarLoading).setVisibility(View.GONE);
             myAdapter = new ProductAdapter(searchProducts, (model, position) -> {
                 Intent intent = new Intent(MainActivity.this, ProductActivity.class);
@@ -78,18 +83,25 @@ public class MainActivity extends AppCompatActivity implements SearchDialog.Noti
             }
         });
 
+        findViewById(R.id.retry).setOnClickListener(v -> {
+            if(!((EditText)findViewById(R.id.search_edittext)).getText().toString().isEmpty()){
+                viewModel.startSearch(((EditText)findViewById(R.id.search_edittext)).getText().toString());
+            }
+        });
+
 
     }
 
     private void init() {
         this.myRecyclerView = findViewById(R.id.productsRecyclerView);
+        this.myRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         this.myLayoutManager = new LinearLayoutManager(this);
         this.scrollView = findViewById(R.id.nestedScrollView);
         this.viewModel = new ViewModelProvider(this).get(ViewModelMain.class);
     }
 
 
-    public void toolbar() {
+    private void toolbar() {
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         if (getSupportActionBar() != null) {

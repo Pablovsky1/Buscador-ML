@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class ViewModelProduct extends AndroidViewModel {
 
-    private ProductRepository repository;
+    private final ProductRepository repository;
 
     public ViewModelProduct(@NonNull Application application) {
         super(application);

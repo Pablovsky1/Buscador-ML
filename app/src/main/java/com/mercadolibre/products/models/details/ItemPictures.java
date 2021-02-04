@@ -1,6 +1,8 @@
 package com.mercadolibre.products.models.details;
 
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 public class ItemPictures {
@@ -15,7 +17,11 @@ public class ItemPictures {
         return url;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    @NonNull
+    @Override
+    public String toString() {
+        return "ItemPictures{" +
+                "url='" + url + '\'' +
+                '}';
     }
 }

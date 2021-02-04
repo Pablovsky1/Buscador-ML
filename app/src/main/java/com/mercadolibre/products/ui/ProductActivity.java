@@ -1,35 +1,39 @@
 package com.mercadolibre.products.ui;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.mercadolibre.products.R;
-import com.synnapps.carouselview.CarouselView;
-import com.synnapps.carouselview.ImageListener;
+import com.mercadolibre.products.adapters.AttributesAdapter;
+import com.mercadolibre.products.adapters.PicturesAdapter;
+import com.mercadolibre.products.models.details.Item;
+import com.mercadolibre.products.models.details.ItemAttributes;
+import com.mercadolibre.products.models.details.ItemPictures;
+import com.mercadolibre.products.util.Resource;
+import com.mercadolibre.products.viewmodels.ViewModelProduct;
 
 import java.util.ArrayList;
 
 public class ProductActivity extends AppCompatActivity {
-    private CarouselView carouselView;
+    private final String TAG = "ProductActivity";
+    private  ViewModelProduct viewModel;
+    private RecyclerView myRecyclerViewAttributes,myRecyclerViewPictures;
 
-    ArrayList<String> list = new ArrayList<>();
+    private RecyclerView.Adapter myAdapterAttributes,myAdapterPictures;
+
+    private RecyclerView.LayoutManager myLayoutManagerAttributes,myLayoutManagerPictures;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,30 +41,66 @@ public class ProductActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product);
         toolbar();
 
-        list.add("https://raw.githubusercontent.com/sayyam/carouselview/master/sample/src/main/res/drawable/image_1.jpg");
-        list.add("https://raw.githubusercontent.com/sayyam/carouselview/master/sample/src/main/res/drawable/image_2.jpg");
-        list.add("https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg");
-        carouselView = findViewById(R.id.carousel);
-        carouselView.setPageCount(list.size());
+        this.viewModel = new ViewModelProvider(this).get(ViewModelProduct.class);
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+           String id = extras.getString("id");
+            this.viewModel.loadProduct(id);
+        }
 
-        ImageListener imageListener = (position, imageView) -> Glide.with(ProductActivity.this)
-                .asBitmap()
-                .load(list.get(position))
-                .into(new CustomTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(@Nullable Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        imageView.setImageBitmap(resource);
-                    }
+        viewModel.getProduct().observe(this, new Observer<Resource<Item>>() {
+            @Override
+            public void onChanged(Resource<Item> resource) {
+                switch (resource.status){
+                    case LOADING:
+                        break;
+                    case SUCCESS:
 
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        ((TextView)findViewById(R.id.condition)).setText(resource.data.getCondition());
+                        ((TextView)findViewById(R.id.soldQuantity)).setText(resource.data.getSoldQuantity());
+                        ((TextView)findViewById(R.id.title)).setText(resource.data.getTitle());
+                        ((TextView)findViewById(R.id.price)).setText(resource.data.getPrice());
+                        ((TextView)findViewById(R.id.quantity)).setText(getString(R.string.product_available_quantity).concat(": ").concat(String.valueOf(resource.data.getAvailableQuantity())));
 
-                    }
+                        break;
+                    case ERROR:
+                        break;
+                }
+            }
+        });
+        this.myRecyclerViewAttributes = findViewById(R.id.recyclerAttributes);
+        this.myLayoutManagerAttributes = new LinearLayoutManager(this);
+        myRecyclerViewAttributes.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+
+        viewModel.getAttributes().observe(this, new Observer<ArrayList<ItemAttributes>>() {
+            @Override
+            public void onChanged(ArrayList<ItemAttributes> itemAttributes) {
+                myAdapterAttributes = new AttributesAdapter(itemAttributes, (model, position) -> {
 
                 });
-        carouselView.setImageListener(imageListener);
+                myRecyclerViewAttributes.setItemAnimator(new DefaultItemAnimator());
+                myRecyclerViewAttributes.setLayoutManager(myLayoutManagerAttributes);
+                myRecyclerViewAttributes.setAdapter(myAdapterAttributes);
+            }
+        });
+
+        this.myRecyclerViewPictures = findViewById(R.id.recyclerPicture);
+        this.myLayoutManagerPictures = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+        viewModel.getPictures().observe(this, new Observer<ArrayList<ItemPictures>>() {
+            @Override
+            public void onChanged(ArrayList<ItemPictures> itemPictures) {
+                myAdapterPictures = new PicturesAdapter(itemPictures, (model, position) -> {
+
+                });
+                myRecyclerViewPictures.setItemAnimator(new DefaultItemAnimator());
+                myRecyclerViewPictures.setLayoutManager(myLayoutManagerPictures);
+                myRecyclerViewPictures.setAdapter(myAdapterPictures);
+            }
+        });
 
     }
+
+
 
     public void toolbar() {
         Toolbar myToolbar = findViewById(R.id.toolbar);

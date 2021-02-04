@@ -74,7 +74,10 @@ public class SearchDialog extends DialogFragment {
             }
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, suggest);
 
-            listView.setOnItemClickListener((parent, view1, position, id) -> searchView.setQuery(suggest.get(position),false));
+            listView.setOnItemClickListener((parent, view1, position, id) -> {
+                listener.onDialogSearch(suggest.get(position));
+                dismiss();
+            });
 
             listView.setAdapter(adapter);
 

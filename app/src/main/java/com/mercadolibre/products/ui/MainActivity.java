@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements SearchDialog.Noti
             findViewById(R.id.progressBarLoading).setVisibility(View.GONE);
             myAdapter = new ProductAdapter(searchProducts, (model, position) -> {
                 Intent intent = new Intent(MainActivity.this, ProductActivity.class);
+                intent.putExtra("id",model.getId());
                 startActivity(intent);
             });
             myRecyclerView.setItemAnimator(new DefaultItemAnimator());

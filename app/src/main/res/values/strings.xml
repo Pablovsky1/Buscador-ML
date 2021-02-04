@@ -6,6 +6,15 @@
     <string name="search_view_hint">Buscar en Mercado Libre</string>
     <string name="description_icon_search_error">Icono de error</string>
     <string name="title_activity_product">Producto</string>
+    <string name="product_available_quantity">Stock disponible</string>
+
+    <string name="product_conditions_new">new</string>
+    <string name="product_conditions_new_es">Nuevo</string>
+    <string name="product_conditions_used">used</string>
+    <string name="product_conditions_used_es">Usado</string>
+    <string name="product_sold">Vendido</string>
+    <string name="product_sold_out">Vendidos</string>
+    <string name="product_information">Información del producto</string>
 
 
 </resources>

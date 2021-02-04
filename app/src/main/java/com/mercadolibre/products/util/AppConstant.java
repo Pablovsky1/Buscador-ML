@@ -7,4 +7,18 @@ public class AppConstant {
     public static final int PAGE_LIMIT = 20;
     public static final int DEFAULT_OFFSET = 0;
 
+    public static boolean isNumeric(String cadena) {
+
+        boolean resultado;
+
+        try {
+            Integer.parseInt(cadena);
+            resultado = true;
+        } catch (NumberFormatException excepcion) {
+            resultado = false;
+        }
+
+        return resultado;
+    }
+
 }

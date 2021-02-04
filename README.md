@@ -22,12 +22,12 @@ Utilizar APIs de Mercadolibre para crear una app que le permita ver al usuario l
 
 ### Manejo de casos de error desde el punto de vista del usuario:
 
-1. Avisar al usuario si se encuentra sin conexión a internet tanto al obtener los productos como al seleccionar uno.
+- Avisar al usuario si se encuentra sin conexión a internet tanto al obtener los productos como al seleccionar uno.
 
-3. Avisar al usuario en caso de que no se hayan obtenido resultados tanto al obtener los productos como al seleccionar uno.
+- Avisar al usuario en caso de que no se hayan obtenido resultados tanto al obtener los productos como al seleccionar uno.
 
-5. Mostrar imagen por defecto en caso de que no se pueda obtener.
+- Mostrar imagen por defecto en caso de que no se pueda obtener.
 
-7. Mostrar imágenes por defecto cuando se obtiene las imágenes.
+- Mostrar imágenes por defecto cuando se obtiene las imágenes.
 
-9. Mostrarle una opción al usuario para que pueda reintentar la búsqueda o en caso de que seleccionar un producto para que pueda obtener la información nuevamente en caso de error. 
+- Mostrarle una opción al usuario para que pueda reintentar la búsqueda o en caso de que seleccionar un producto para que pueda obtener la información nuevamente en caso de error. 

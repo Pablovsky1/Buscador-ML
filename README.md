@@ -31,3 +31,8 @@ Utilizar APIs de Mercadolibre para crear una app que le permita ver al usuario l
 
 - Mostrarle una opción al usuario para que pueda reintentar la búsqueda o en caso de que seleccionar un producto para que pueda obtener la información nuevamente en caso de error. 
 
+#### Instalar por adb
+
+`$ cd {apk location}`
+
+`$ adb install  app-release.apk`

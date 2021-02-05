@@ -1,7 +1,7 @@
 package com.mercadolibre.products.repositories;
 
 
-import android.app.Application;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -23,23 +23,23 @@ import retrofit2.Retrofit;
 
 public class SuggestRepository {
     private final String TAG = "SuggestRepository";
-    private final Application application;
+    private final Context context;
     private final Retrofit retrofit;
     private final MutableLiveData<ArrayList<SuggestQueries>> suggest;
 
-    public SuggestRepository(Application application) {
+    public SuggestRepository(Context context) {
         this.retrofit = RetrofitRequest.getRetrofitInstance();
         this.suggest = new MutableLiveData<>();
-        this.application = application;
+        this.context = context;
     }
 
     public void getSuggest(String item){
-        if(!AppConstant.isConnectionAvailable(application)){
+        if(!AppConstant.isConnectionAvailable(context)){
             return;
         }
 
-        if(item.isEmpty()){
-            suggest.setValue(new ArrayList<>());
+        if(item==null || item.isEmpty()){
+            suggest.postValue(new ArrayList<>());
             return;
         }
         ApiRequest apiRequest = retrofit.create(ApiRequest.class);
@@ -50,7 +50,7 @@ public class SuggestRepository {
                 if(response.body()==null || response.body().getSuggestQueries().size()<=0){
                     MyLog.e(TAG,"Search null");
                 }else {
-                    suggest.setValue(response.body().getSuggestQueries());
+                    suggest.postValue(response.body().getSuggestQueries());
                     MyLog.i(TAG, "Search success suggest: " + response.body().getSuggestQueries().size());
                 }
             }

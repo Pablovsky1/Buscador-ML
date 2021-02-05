@@ -1,6 +1,6 @@
 package com.mercadolibre.products.repositories;
 
-import android.app.Application;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -13,7 +13,6 @@ import com.mercadolibre.products.models.search.SearchProduct;
 import com.mercadolibre.products.retrofit.ApiRequest;
 import com.mercadolibre.products.retrofit.RetrofitRequest;
 import com.mercadolibre.products.util.AppConstant;
-import com.mercadolibre.products.util.MyLog;
 import com.mercadolibre.products.util.Resource;
 
 import java.util.ArrayList;
@@ -24,15 +23,15 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class SearchRepository {
-    private final Application application;
+    private final Context context;
     private final Retrofit retrofit;
     private final MutableLiveData<Resource<Search>> search;
     private final MutableLiveData<ArrayList<SearchProduct>> products;
     private final MutableLiveData<SearchPagination> pagination;
     private boolean loading;
 
-    public SearchRepository(Application application) {
-        this.application = application;
+    public SearchRepository(Context context) {
+        this.context = context;
         this.retrofit = RetrofitRequest.getRetrofitInstance();
         this.search = new MutableLiveData<>();
         this.products = new MutableLiveData<>();
@@ -42,11 +41,11 @@ public class SearchRepository {
 
     public void getSearch(String item){
         removeProducts();
-        if(!AppConstant.isConnectionAvailable(application)){
-            this.search.setValue(Resource.error(application.getString(R.string.conection),null));
+        if(!AppConstant.isConnectionAvailable(context)){
+            this.search.postValue(Resource.error(context.getString(R.string.conection),null));
             return;
         }
-        this.search.setValue(Resource.loading(null));
+        this.search.postValue(Resource.loading(null));
 
         ApiRequest apiRequest = retrofit.create(ApiRequest.class);
         Call<Search> call = apiRequest.getItems(item, AppConstant.DEFAULT_OFFSET, AppConstant.PAGE_LIMIT);
@@ -54,7 +53,7 @@ public class SearchRepository {
             @Override
             public void onResponse(@NonNull Call<Search> call,@NonNull Response<Search> response) {
                 if(response.body()==null || response.body().getProductos().size()<=0){
-                    search.postValue(Resource.error(application.getString(R.string.search_not_found)+"\n"+application.getString(R.string.search_not_found_advice),null));
+                    search.postValue(Resource.error(context.getString(R.string.search_not_found)+"\n"+context.getString(R.string.search_not_found_advice),null));
                 }else {
                     search.postValue(Resource.success(response.body()));
                     addProducts(response.body().getProductos());
@@ -64,7 +63,7 @@ public class SearchRepository {
 
             @Override
             public void onFailure(@NonNull Call<Search> call,@NonNull Throwable t) {
-                search.postValue(Resource.error(application.getString(R.string.search_error),null));
+                search.postValue(Resource.error(context.getString(R.string.search_error),null));
             }
         });
     }
@@ -82,7 +81,7 @@ public class SearchRepository {
                 if(response.body()==null || response.body().getProductos().size()<=0){
                     loading=true;
                 }else {
-                    pagination.setValue(response.body().getPaging());
+                    pagination.postValue(response.body().getPaging());
                     ArrayList<SearchProduct> searchProducts = products.getValue();
                     if(searchProducts==null){
                         loading=true;

@@ -1,6 +1,6 @@
 package com.mercadolibre.products.repositories;
 
-import android.app.Application;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -13,7 +13,6 @@ import com.mercadolibre.products.models.details.ItemPictures;
 import com.mercadolibre.products.retrofit.ApiRequest;
 import com.mercadolibre.products.retrofit.RetrofitRequest;
 import com.mercadolibre.products.util.AppConstant;
-import com.mercadolibre.products.util.MyLog;
 import com.mercadolibre.products.util.Resource;
 
 import java.text.NumberFormat;
@@ -28,14 +27,14 @@ import retrofit2.Retrofit;
 public class ProductRepository {
 
     private final String TAG = "ProductRepository";
-    private final Application application;
+    private final Context context;
     private final Retrofit retrofit;
     private final MutableLiveData<Resource<Item>> product;
     private final MutableLiveData<ArrayList<ItemAttributes>> attributes;
     private final MutableLiveData<ArrayList<ItemPictures>> pictures;
 
-    public ProductRepository(Application application) {
-        this.application = application;
+    public ProductRepository(Context context) {
+        this.context = context;
         this.retrofit = RetrofitRequest.getRetrofitInstance();
         this.product = new MutableLiveData<>();
         this. attributes = new MutableLiveData<>();
@@ -43,8 +42,8 @@ public class ProductRepository {
     }
 
     public void getProduct(String id){
-        if(!AppConstant.isConnectionAvailable(application)){
-            this.product.setValue(Resource.error(application.getString(R.string.conection),null));
+        if(!AppConstant.isConnectionAvailable(context)){
+            this.product.setValue(Resource.error(context.getString(R.string.conection),null));
             return;
         }
         product.postValue(Resource.loading(null));
@@ -73,18 +72,18 @@ public class ProductRepository {
     }
 
     private String setTypeCondition(String condition){
-        if(application.getString(R.string.product_conditions_new).equals(condition)){
-            return application.getString(R.string.product_conditions_new_es);
+        if(context.getString(R.string.product_conditions_new).equals(condition)){
+            return context.getString(R.string.product_conditions_new_es);
         }else{
-            return application.getString(R.string.product_conditions_used_es);
+            return context.getString(R.string.product_conditions_used_es);
         }
     }
 
     private String setSoldQuatity(int sold){
         if(sold==1){
-            return application.getString(R.string.product_sold);
+            return context.getString(R.string.product_sold);
         }else{
-            return application.getString(R.string.product_sold_out);
+            return context.getString(R.string.product_sold_out);
         }
     }
 
